@@ -3,6 +3,9 @@
 import os
 import signal
 import gi
+import ConfigParser
+from classes.ConfigWindow import ConfigWindow
+
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
@@ -14,18 +17,43 @@ import gi.repository.Notify as notify
 
 APPINDICATOR_ID = 'heater_control_indicator'
 
+# some global variables
+NetworkHost = 0
+NetworkPort = 0
+NetworkLocalHost = 0
+NetworkLocalPort = 0
 
 def main():
-    indicator = appindicator.Indicator.new(APPINDICATOR_ID, os.path.abspath("/home/george/Downloads/heater_icon.png"),
-                                           appindicator.IndicatorCategory.SYSTEM_SERVICES)
+    get_config()
+    indicator = appindicator.Indicator.new(APPINDICATOR_ID, os.path.abspath("/home/george/Downloads/heater_icon.png"),appindicator.IndicatorCategory.SYSTEM_SERVICES)
     indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
     indicator.set_menu(build_menu())
     notify.init(APPINDICATOR_ID)
     gtk.main()
 
 
+def get_config():
+    global NetworkHost
+    global NetworkPort
+    global NetworkLocalHost
+    global NetworkLocalPort
+
+    config = ConfigParser.ConfigParser();
+    config.read("config.ini")
+    NetworkHost = config.get("Network", "Host")
+    NetworkPort = config.get("Network", "Port")
+    NetworkLocalHost = config.get("Network", "LocalHost")
+    NetworkLocalPort = config.get("Network", "LocalPort")
+    if NetworkHost == -1 or NetworkPort == -1 or NetworkLocalHost == -1 or NetworkLocalPort == -1:
+        set_config()
+
+
 def set_config(_):
-    notify.Notification.new("<b>Configuration unavailable</b>").show()
+    config = ConfigParser.ConfigParser();
+    config.read("config.ini")
+    configWindow = ConfigWindow()
+    configWindow.connect("delete-event", gtk.main_quit)
+    configWindow.show_all()
     pass
 
 
