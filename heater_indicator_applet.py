@@ -4,6 +4,9 @@ import os
 import signal
 import gi
 import ConfigParser
+import yaml
+import socket
+
 from classes.ConfigWindow import ConfigWindow
 
 
@@ -22,8 +25,16 @@ NetworkHost = 0
 NetworkPort = 0
 NetworkLocalHost = 0
 NetworkLocalPort = 0
+# Colors
+colors = {}
+
+def init():
+    global colors
+    with open("colors.yml", 'r') as ymlfile:
+        colors = yaml.load(ymlfile)
 
 def main():
+    init()
     get_config()
     indicator = appindicator.Indicator.new(APPINDICATOR_ID, os.path.abspath("/home/george/Downloads/heater_icon.png"),appindicator.IndicatorCategory.SYSTEM_SERVICES)
     indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
@@ -56,29 +67,52 @@ def set_config(_):
     configWindow.show_all()
     pass
 
+def changeColor(e, colorCode):
+    global colors
+    changeTo = colors[colorCode]
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, 0)
+    s.connect((NetworkHost, int(NetworkPort)))
+    s.send(changeTo)
+    s.close()
 
-def turn_on(_):
-    notify.Notification.new("<b>Heater Control</b><br>Turning heater on....").show()
-    pass
-
-
-def turn_off(_):
-    notify.Notification.new("<b>Heater Control</b><br>Turning heater off....").show()
-    pass
 
 
 def build_menu():
     menu = gtk.Menu()
 
     control_menu = gtk.Menu()
-    item_controlmenu_on = gtk.MenuItem("Turn ON")
-    item_controlmenu_off = gtk.MenuItem("Turn OFF")
-    item_controlmenu_on.connect('activate', turn_on)
-    item_controlmenu_off.connect('activate', turn_off)
-    control_menu.append(item_controlmenu_on)
-    control_menu.append(item_controlmenu_off)
 
-    item_control = gtk.MenuItem("Control")
+    item_controlmenu_red = gtk.MenuItem("Red")
+    item_controlmenu_Green = gtk.MenuItem("Green")
+    item_controlmenu_Blue = gtk.MenuItem("Blue")
+    item_controlmenu_Cyan = gtk.MenuItem("Cyan")
+    item_controlmenu_Pink = gtk.MenuItem("Pink")
+    item_controlmenu_Purple = gtk.MenuItem("Purple")
+    item_controlmenu_Orange = gtk.MenuItem("Orange")
+    item_controlmenu_White = gtk.MenuItem("White")
+    item_controlmenu_Black = gtk.MenuItem("Black")
+
+    item_controlmenu_red.connect('activate', changeColor, "Red")
+    item_controlmenu_Green.connect('activate', changeColor, "Green")
+    item_controlmenu_Blue.connect('activate', changeColor, "Blue")
+    item_controlmenu_Cyan.connect('activate', changeColor, "Cyan")
+    item_controlmenu_Pink.connect('activate', changeColor, "Pink")
+    item_controlmenu_Purple.connect('activate', changeColor, "Purple")
+    item_controlmenu_Orange.connect('activate', changeColor, "Orange")
+    item_controlmenu_White.connect('activate', changeColor, "White")
+    item_controlmenu_Black.connect('activate', changeColor, "Black")
+
+    control_menu.append(item_controlmenu_red)
+    control_menu.append(item_controlmenu_Green)
+    control_menu.append(item_controlmenu_Blue)
+    control_menu.append(item_controlmenu_Cyan)
+    control_menu.append(item_controlmenu_Pink)
+    control_menu.append(item_controlmenu_Purple)
+    control_menu.append(item_controlmenu_Orange)
+    control_menu.append(item_controlmenu_White)
+    control_menu.append(item_controlmenu_Black)
+
+    item_control = gtk.MenuItem("Change color to")
     item_control.set_submenu(control_menu)
     menu.append(item_control)
     item_config = gtk.MenuItem("Configuration")

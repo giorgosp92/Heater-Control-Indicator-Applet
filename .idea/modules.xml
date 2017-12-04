@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/Heater-Control-Indicator-Applet.iml" filepath="$PROJECT_DIR$/.idea/Heater-Control-Indicator-Applet.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/heater_control_indicator_applet.iml" filepath="$PROJECT_DIR$/.idea/heater_control_indicator_applet.iml" />
     </modules>
   </component>
