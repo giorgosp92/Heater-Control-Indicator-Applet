@@ -9,7 +9,6 @@ import socket
 
 from classes.ConfigWindow import ConfigWindow
 
-
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Notify', '0.7')
@@ -21,17 +20,19 @@ import gi.repository.Notify as notify
 APPINDICATOR_ID = 'heater_control_indicator'
 
 # some global variables
-NetworkHost = 0
-NetworkPort = 0
-NetworkLocalHost = 0
-NetworkLocalPort = 0
+networkHost = 0
+networkPort = 0
+networkLocalHost = 0
+networkLocalPort = 0
 # Colors
 colors = {}
+
 
 def init():
     global colors
     with open("colors.yml", 'r') as ymlfile:
         colors = yaml.load(ymlfile)
+
 
 def main():
     init()
@@ -44,37 +45,36 @@ def main():
 
 
 def get_config():
-    global NetworkHost
-    global NetworkPort
-    global NetworkLocalHost
-    global NetworkLocalPort
+    global networkHost
+    global networkPort
+    global networkLocalHost
+    global networkLocalPort
 
     config = ConfigParser.ConfigParser();
     config.read("config.ini")
-    NetworkHost = config.get("Network", "Host")
-    NetworkPort = config.get("Network", "Port")
-    NetworkLocalHost = config.get("Network", "LocalHost")
-    NetworkLocalPort = config.get("Network", "LocalPort")
-    if NetworkHost == -1 or NetworkPort == -1 or NetworkLocalHost == -1 or NetworkLocalPort == -1:
+    if config.has_section("Network"):
+        networkHost = config.get("Network", "host")
+        networkPort = config.get("Network", "port")
+        networkLocalHost = config.get("Network", "localHost")
+        networkLocalPort = config.get("Network", "localPort")
+    else:
         set_config()
 
 
-def set_config(_):
+def set_config(args = None):
     config = ConfigParser.ConfigParser();
     config.read("config.ini")
     configWindow = ConfigWindow()
-    configWindow.connect("delete-event", gtk.main_quit)
-    configWindow.show_all()
-    pass
+    configWindow.window.show_all()
+
 
 def changeColor(e, colorCode):
     global colors
     changeTo = colors[colorCode]
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, 0)
-    s.connect((NetworkHost, int(NetworkPort)))
+    s.connect((networkHost, int(networkPort)))
     s.send(changeTo)
     s.close()
-
 
 
 def build_menu():
