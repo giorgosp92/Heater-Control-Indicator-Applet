@@ -37,7 +37,9 @@ def init():
 def main():
     init()
     get_config()
-    indicator = appindicator.Indicator.new(APPINDICATOR_ID, os.path.abspath("/home/george/Downloads/heater_icon.png"),appindicator.IndicatorCategory.SYSTEM_SERVICES)
+    indicator = appindicator.Indicator.new(APPINDICATOR_ID,
+                                           os.path.abspath("resources/icon.png"),
+                                           appindicator.IndicatorCategory.SYSTEM_SERVICES)
     indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
     indicator.set_menu(build_menu())
     notify.init(APPINDICATOR_ID)
