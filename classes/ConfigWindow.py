@@ -1,29 +1,47 @@
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GObject
+gi.require_version('Notify', '0.7')
+from gi.repository import Gtk
+import gi.repository.Notify as notify
+import ConfigParser
 
 
 class ConfigWindow(Gtk.Window):
     def __init__(self):
-        Gtk.Window.__init__(self, title="Configuration")
-        # self.set_size(400, 400)
-        self.timeout_id = None
+        builder = Gtk.Builder()
+        builder.add_from_file("views/network_config_view.glade")
+        builder.connect_signals(self)
 
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        self.add(vbox)
+        self.window = builder.get_object("network_config_window")
+        self.entry_local_ip = builder.get_object("local_ip_address_field")
+        self.entry_local_port = builder.get_object("local_port_field")
+        self.entry_local_ssid = builder.get_object("local_ssid_field")
 
-        self.entry = Gtk.Entry()
-        # self.entry.set_text()
-        vbox.pack_start(self.entry, True, True, 0)
-
-        hbox = Gtk.Box(spacing=6)
-        vbox.pack_start(hbox, True, True, 0)
-
-        submit_button = Gtk.Button.new_with_label("Save Configuration")
-        submit_button.connect("clicked", self.on_save_button_clicked)
-        hbox.pack_start(submit_button, True, True, 0)
-
-    def on_save_button_clicked(self, button):
-        pass
+        config = ConfigParser.ConfigParser();
+        config.read("config.ini")
+        if config.has_section("Network"):
+            self.entry_local_ip.set_text(config.get("Network", "host"))
+            self.entry_local_port.set_text(config.get("Network", "port"))
+            self.entry_local_ip.set_text(config.get("Network", "localHost"))
+            self.entry_local_port.set_text(config.get("Network", "localPort"))
 
 
+    def onButtonClicked(self, button):
+        # Validate input
+        if self.entry_local_ip.get_text() == "" and self.entry_local_port.get_text() == "":
+            notify.Notification.new("Ip Address and Port cannot be empty").show()
+            return 0
+
+        config = ConfigParser.RawConfigParser()
+
+        config.add_section('Network')
+        config.set("Network", "host", self.entry_local_ip.get_text())
+        config.set("Network", "port", self.entry_local_port.get_text())
+        config.set("Network", "localHost", self.entry_local_ip.get_text())
+        config.set("Network", "localPort", self.entry_local_port.get_text())
+        config.set("Network", "localSSID", self.entry_local_ssid.get_text())
+
+        with open("config.ini", "wb") as configfile:
+            config.write(configfile)
+        self.window.destroy()
+        notify.Notification.new("Network Configuration Saved").show()
