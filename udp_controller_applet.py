@@ -17,7 +17,7 @@ import gi.repository.Gtk as gtk
 import gi.repository.AppIndicator3 as appindicator
 import gi.repository.Notify as notify
 
-APPINDICATOR_ID = 'heater_control_indicator'
+APPINDICATOR_ID = 'udp_controller_applet'
 
 # some global variables
 networkHost = 0
