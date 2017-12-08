@@ -46,12 +46,11 @@ def main():
     gtk.main()
 
 
-def get_config():
+def get_config(args = None):
     global networkHost
     global networkPort
     global networkLocalHost
     global networkLocalPort
-
     config = ConfigParser.ConfigParser();
     config.read("config.ini")
     if config.has_section("Network"):
@@ -59,6 +58,7 @@ def get_config():
         networkPort = config.get("Network", "port")
         networkLocalHost = config.get("Network", "localHost")
         networkLocalPort = config.get("Network", "localPort")
+        print "Read Settings: %s:%s" % (networkHost, networkPort)
     else:
         set_config()
 
@@ -67,7 +67,10 @@ def set_config(args = None):
     config = ConfigParser.ConfigParser();
     config.read("config.ini")
     configWindow = ConfigWindow()
+    # Grab destroy event in this class to trigger get config and replace configuration
+    configWindow.window.connect("destroy", get_config)
     configWindow.window.show_all()
+
 
 
 def changeColor(e, colorCode):

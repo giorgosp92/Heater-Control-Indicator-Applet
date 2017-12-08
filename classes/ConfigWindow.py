@@ -25,6 +25,7 @@ class ConfigWindow(Gtk.Window):
             self.entry_local_ip.set_text(config.get("Network", "localHost"))
             self.entry_local_port.set_text(config.get("Network", "localPort"))
 
+
     def onButtonClicked(self, button):
         # Validate input
         if self.entry_local_ip.get_text() == "" and self.entry_local_port.get_text() == "":
