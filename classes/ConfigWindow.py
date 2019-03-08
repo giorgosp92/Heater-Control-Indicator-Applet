@@ -6,10 +6,12 @@ import gi.repository.Notify as notify
 import ConfigParser
 
 
+PROJECT_PATH = "/home/giorgos/Projects/Iot-Controller-Applet/"
+
 class ConfigWindow(Gtk.Window):
     def __init__(self):
         builder = Gtk.Builder()
-        builder.add_from_file("views/network_config_view.glade")
+        builder.add_from_file(PROJECT_PATH + "views/network_config_view.glade")
         builder.connect_signals(self)
 
         self.window = builder.get_object("network_config_window")
@@ -18,7 +20,7 @@ class ConfigWindow(Gtk.Window):
         self.entry_local_ssid = builder.get_object("local_ssid_field")
 
         config = ConfigParser.ConfigParser();
-        config.read("config.ini")
+        config.read(PROJECT_PATH + "config.ini")
         if config.has_section("Network"):
             self.entry_local_ip.set_text(config.get("Network", "host"))
             self.entry_local_port.set_text(config.get("Network", "port"))
@@ -41,7 +43,7 @@ class ConfigWindow(Gtk.Window):
         config.set("Network", "localPort", self.entry_local_port.get_text())
         config.set("Network", "localSSID", self.entry_local_ssid.get_text())
 
-        with open("config.ini", "wb") as configfile:
+        with open(PROJECT_PATH + "config.ini", "wb") as configfile:
             config.write(configfile)
         self.window.destroy()
         notify.Notification.new("Network Configuration Saved").show()

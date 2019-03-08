@@ -26,19 +26,20 @@ networkLocalHost = 0
 networkLocalPort = 0
 # Colors
 colors = {}
+# Path
+PROJECT_PATH = "/home/giorgos/Projects/Iot-Controller-Applet/"
 
 
 def init():
     global colors
-    with open("colors.yml", 'r') as ymlfile:
+    with open(PROJECT_PATH + "colors.yml", 'r') as ymlfile:
         colors = yaml.load(ymlfile)
-
 
 def main():
     init()
     get_config()
     indicator = appindicator.Indicator.new(APPINDICATOR_ID,
-                                           os.path.abspath("resources/icon.png"),
+                                           PROJECT_PATH + "resources/icon.png",
                                            appindicator.IndicatorCategory.SYSTEM_SERVICES)
     indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
     indicator.set_menu(build_menu())
@@ -51,8 +52,9 @@ def get_config(args = None):
     global networkPort
     global networkLocalHost
     global networkLocalPort
+
     config = ConfigParser.ConfigParser();
-    config.read("config.ini")
+    config.read(PROJECT_PATH + "config.ini")
     if config.has_section("Network"):
         networkHost = config.get("Network", "host")
         networkPort = config.get("Network", "port")
