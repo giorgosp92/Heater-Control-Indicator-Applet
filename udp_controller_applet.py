@@ -19,14 +19,11 @@ import gi.repository.Notify as notify
 
 APPINDICATOR_ID = 'udp_controller_applet'
 
-# some global variables
 networkHost = 0
 networkPort = 0
-networkLocalHost = 0
-networkLocalPort = 0
-# Colors
+
 colors = {}
-# Path
+
 PROJECT_PATH = "/home/giorgos/Projects/Iot-Controller-Applet/"
 
 
@@ -50,37 +47,32 @@ def main():
 def get_config(args = None):
     global networkHost
     global networkPort
-    global networkLocalHost
-    global networkLocalPort
 
-    config = ConfigParser.ConfigParser();
+    config = ConfigParser.ConfigParser()
     config.read(PROJECT_PATH + "config.ini")
     if config.has_section("Network"):
         networkHost = config.get("Network", "host")
         networkPort = config.get("Network", "port")
-        networkLocalHost = config.get("Network", "localHost")
-        networkLocalPort = config.get("Network", "localPort")
         print "Read Settings: %s:%s" % (networkHost, networkPort)
     else:
         set_config()
 
 
 def set_config(args = None):
-    config = ConfigParser.ConfigParser();
+    config = ConfigParser.ConfigParser()
     config.read("config.ini")
-    configWindow = ConfigWindow()
+    config_window = ConfigWindow()
     # Grab destroy event in this class to trigger get config and replace configuration
-    configWindow.window.connect("destroy", get_config)
-    configWindow.window.show_all()
+    config_window.window.connect("destroy", get_config)
+    config_window.window.show_all()
 
 
-
-def changeColor(e, colorCode):
+def change_color(e, colorCode):
     global colors
-    changeTo = colors[colorCode]
+    change_to = colors[colorCode]
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, 0)
     s.connect((networkHost, int(networkPort)))
-    s.send(changeTo)
+    s.send(change_to)
     s.close()
 
 
@@ -99,15 +91,15 @@ def build_menu():
     item_controlmenu_White = gtk.MenuItem("White")
     item_controlmenu_Black = gtk.MenuItem("Black")
 
-    item_controlmenu_red.connect('activate', changeColor, "Red")
-    item_controlmenu_Green.connect('activate', changeColor, "Green")
-    item_controlmenu_Blue.connect('activate', changeColor, "Blue")
-    item_controlmenu_Cyan.connect('activate', changeColor, "Cyan")
-    item_controlmenu_Pink.connect('activate', changeColor, "Pink")
-    item_controlmenu_Purple.connect('activate', changeColor, "Purple")
-    item_controlmenu_Orange.connect('activate', changeColor, "Orange")
-    item_controlmenu_White.connect('activate', changeColor, "White")
-    item_controlmenu_Black.connect('activate', changeColor, "Black")
+    item_controlmenu_red.connect('activate', change_color, "Red")
+    item_controlmenu_Green.connect('activate', change_color, "Green")
+    item_controlmenu_Blue.connect('activate', change_color, "Blue")
+    item_controlmenu_Cyan.connect('activate', change_color, "Cyan")
+    item_controlmenu_Pink.connect('activate', change_color, "Pink")
+    item_controlmenu_Purple.connect('activate', change_color, "Purple")
+    item_controlmenu_Orange.connect('activate', change_color, "Orange")
+    item_controlmenu_White.connect('activate', change_color, "White")
+    item_controlmenu_Black.connect('activate', change_color, "Black")
 
     control_menu.append(item_controlmenu_red)
     control_menu.append(item_controlmenu_Green)

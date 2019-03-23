@@ -109,43 +109,6 @@
                 <property name="position">2</property>
               </packing>
             </child>
-            <child>
-              <object class="GtkBox" id="gtk_box_local_ssid">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkLabel" id="local_ssid_label">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Enter your local SSID: </property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="local_ssid_field">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="xalign">0.5</property>
-                    <property name="placeholder_text" translatable="yes">Enter your SSID name</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">3</property>
-              </packing>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -164,7 +127,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="onButtonClicked" swapped="no"/>
+                <signal name="clicked" handler="on_button_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">True</property>
